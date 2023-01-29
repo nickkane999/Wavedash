@@ -1,2 +1,2 @@
-# wavedash
-A tool that helps create emails to send out
+# Wavedash
+A tool that uses a user-friendly UI to generate mjml emails. 
