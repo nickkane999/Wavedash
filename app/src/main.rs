@@ -1,14 +1,21 @@
 use druid::{Data, widget::{Button, Flex, Label, Padding, Align, TextBox}, TextAlignment, theme, FontWeight,
- AppLauncher, Env, WindowDesc, Widget, WidgetExt, Lens, FontDescriptor, FontFamily, kurbo::Insets};
+ AppLauncher, Env, WindowDesc, Widget, WidgetExt, Lens, FontDescriptor, FontFamily, kurbo::Insets, KeyOrValue};
 use std::fs::File;
 use std::io::prelude::*;
-
+use std::any::Any;
 #[derive(Clone, Data, Lens)]
 struct FunnyData {
     num: u32,
     email_address: String,
     email_subject: String,
     email_body: String,
+}
+// Create label format function with text and padding data type
+fn label_format(text: &str, padding: KeyOrValue<druid::Insets>) -> impl Widget<()> {
+    let label_container = Label::new("Sample data: ");
+    let aligned_label = Align::left(label_container);    
+    let sample_label = Padding::new((0.0, 0.0, 0.0, 60.0), aligned_label);
+    return sample_label;
 }
 
 fn ui_builder() -> impl Widget<FunnyData> {
@@ -23,7 +30,44 @@ fn ui_builder() -> impl Widget<FunnyData> {
     let increment = Button::new("+").on_click(|ctx, data: &mut FunnyData, _: &Env| data.num += 1);
     let decrement = Button::new("-").on_click(|ctx, data: &mut FunnyData, _: &Env| data.num -= 1);
 
+    /*
+    let label_container = Label::new("Sample data: ");
+    let aligned_label = Align::left(label_container);    
+    let sample_label = Padding::new((0.0, 0.0, 0.0, 60.0), aligned_label);
+    
+    */
+    let label_container = Label::new("Sample data: ");
+    let aligned_label = Align::left(label_container);    
+    let sample_label = Padding::new((0.0, 0.0, 0.0, 60.0), aligned_label);
+    //let sample_label = label_format("Sample Label", (0.0, 0.0, 0.0, 60.0).into());
+
     // Width padding -> (left, top, right, bottom)
+    /* 
+
+    let email_address_label = Padding::new((0.0, 20.0, 0.0, 10.0), 
+    Align::left(Label::new(|data: &FunnyData, _: &Env| format!("Email Address: "))
+            .with_font(font_label.clone())));
+    let email_address = Padding::new((0.0, 0.0, 0.0, 20.0), 
+        TextBox::new().with_placeholder("Email Address").lens(FunnyData::email_address));
+    let email_subject_label = Padding::new((0.0, 0.0, 0.0, 10.0),
+        Label::new(|data: &FunnyData, _: &Env| format!("Email Subject: "))
+            .with_font(font_label.clone()));
+    let email_subject = Padding::new((0.0, 0.0, 0.0, 20.0), 
+        TextBox::new().with_placeholder("Email Subject")
+            .lens(FunnyData::email_subject));
+    let email_body_label = Padding::new((0.0, 0.0, 0.0, 10.0),
+        Label::new(|data: &FunnyData, _: &Env| format!("Email Body: "))
+            .with_font(font_label.clone()));
+    let email_body = Padding::new((0.0, 0.0, 00.0, 20.0),
+        TextBox::multiline()
+            .with_line_wrapping(true)
+            .with_text_alignment(TextAlignment::Start)
+            .with_text_size(theme::TEXT_SIZE_NORMAL)
+            .with_placeholder("Email Body")
+            .lens(FunnyData::email_body));
+
+    
+    */
     let email_address_label = Padding::new((0.0, 20.0, 0.0, 10.0), 
     Align::left(Label::new(|data: &FunnyData, _: &Env| format!("Email Address: "))
             .with_font(font_label.clone())));
@@ -51,7 +95,7 @@ fn ui_builder() -> impl Widget<FunnyData> {
 
     Flex::column().with_child(
         Flex::column()
-            .with_child(email_address_label)
+            .with_child(sample_label)
             .with_child(email_address)
     ).with_child(
         Flex::column()
