@@ -1,12 +1,13 @@
-#![allow(warnings)]
-mod components2;
-use components2::{LabelData, InputData, FunnyData};
+mod components;
+use components::{LabelData, InputData, FunnyData};
 
-use druid::{Data, widget::{Button, Flex, Label, Padding, Align, TextBox, LensWrap}, TextAlignment, theme, FontWeight,
+use druid::{Data, widget::{Button, Flex, Label, Padding, Align, TextBox}, TextAlignment, theme, FontWeight,
  AppLauncher, Env, WindowDesc, Widget, WidgetExt, Lens, FontDescriptor, FontFamily, kurbo::Insets, KeyOrValue};
 use std::fs::File;
 use std::io::prelude::*;
 use std::any::Any;
+
+use crate::components::funny_data_derived_lenses::email_address;
 
 
 // Create label format function with text and padding data type
@@ -40,56 +41,30 @@ fn new_label2(label: LabelData) -> Padding<FunnyData, Align<FunnyData>> {
     return email_address_label;
 }
 
-pub fn new_label_replace(label: LabelData) -> Padding<FunnyData, Align<FunnyData>> {
-    let font_label = FontDescriptor::new(FontFamily::SYSTEM_UI)
-        .with_weight(label.font_weight)
-        .with_size(label.font_size);
-    let applied_font_label = Label::new(format!("{}", label.text)).with_font(font_label.clone());
-    let aligned_label = match label.alignment {
-        Some(x) =>  
-        if x == "left" { Align::left(applied_font_label) }
-        else { Align::centered(applied_font_label) },
-        None => Align::centered(applied_font_label),
-    };
-    let label = Padding::new(label.padding, aligned_label);
-    return label;
-}
 
 //fn ui_builder() -> impl Widget<FunnyData> {
-fn ui_builder() -> impl Widget<FunnyData> {
-    let email_label_data = LabelData {
+fn ui_builder() {
+        //use components::{new_label, new_field, new_field_formatting};
+    use components::{new_label, new_field};
+
+    let email_address_label = new_label( LabelData {
         text: String::from("Email Address:"),
         font_size: 24.0,
         font_weight: FontWeight::BOLD,
         padding: (0.0, 20.0, 0.0, 10.0).into(),
         alignment: Some(String::from("left")),
-    };
-    let email_address_label = new_label_replace(email_label_data);
-    /*
-    let email_input = new_field(InputData {
-        text: String::from("Email Address"),
-        padding: (0.0, 0.0, 0.0, 20.0).into(),
-        alignment: Some(String::from("left")),sss
-        field: String::from("email_address")
     });
-    */
-    let test = InputData::new(InputData {
+    let email_input_data = InputData {
         text: String::from("Email Address"),
         padding: (0.0, 0.0, 0.0, 20.0).into(),
         alignment: Some(String::from("left")),
-        field_type: String::from("email_address"),
-    });
-    test.create_textbox();
-    let new_email_address = test.format_textbox();
-    
-    //let test_textbox = test.create_label();
+        field: FunnyDataOptions(FunnyData::email_address),
+    };
+    let new_email_address: () = new_field(email_input_data);
+    println!("New email address: {}", new_email_address);
 
-
-    //let new_email_address_input: LensWrap<FunnyData, String, components2::funny_data_derived_lenses::email_address, TextBox<String>> = TextBox::new().with_placeholder(email_input_data.text).lens(FunnyData::email_address);
-    //let new_email_address = new_field(email_input_data);
-    
-    
-    
+    /*
+    new_email_address = new_field_formatting((): new_email_address, email_input_data);
     let font_label = FontDescriptor::new(FontFamily::SYSTEM_UI)
         .with_weight(FontWeight::BOLD)
         .with_size(24.0);
@@ -128,6 +103,8 @@ fn ui_builder() -> impl Widget<FunnyData> {
                     .with_child(email_body_label)
                     .with_child(email_body)
             )
+*/
+
     /* 
     let email_address_label = Padding::new((0.0, 20.0, 0.0, 10.0), 
     Align::left(Label::new(|data: &FunnyData, _: &Env| format!("Email Address: "))
